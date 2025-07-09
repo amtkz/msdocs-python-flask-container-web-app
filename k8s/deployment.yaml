@@ -13,7 +13,7 @@ spec:
       spec: 
         containers:
         - name: aks-demo
-          image: amitd.azurecr.io/myapp:4950e00a37ec4cc361643b6f9a6cdaf2a38a41b4
+          image: amitd.azurecr.io/myapp::${{ github.sha }}
           resources:
             limits: 
               memory: "128Mi"
