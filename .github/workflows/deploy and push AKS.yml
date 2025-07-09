@@ -17,6 +17,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - uses: azure/docker-login@v1
+      with:
+        login-server: amitd.azurecr.io
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
                 
     - name: Setup Python
       uses: actions/setup-python@v5.6.0
