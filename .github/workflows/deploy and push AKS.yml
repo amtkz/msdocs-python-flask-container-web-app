@@ -59,6 +59,8 @@ jobs:
         uses: azure/setup-kubectl@v3
  
       - name: Install kubelogin
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: azure/use-kubelogin@v1
         with:
           kubelogin-version: 'latest'
