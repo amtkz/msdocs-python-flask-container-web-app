@@ -6,17 +6,17 @@ spec:
   selector:
     matchLabels:
       app: aks-demo
-    template:
-      metadata:
-        labels:
-          app: aks-demo
-      spec: 
-        containers:
-        - name: aks-demo
-          image: amitd.azurecr.io/myapp::${{ github.sha }}
-          resources:
-            limits: 
-              memory: "128Mi"
-              cpu: "500m"
-          ports:
-          - containerPort: 80
+  template:
+    metadata:
+      labels:
+        app: aks-demo
+    spec: 
+      containers:
+      - name: aks-demo
+        image: amitd.azurecr.io/myapp::${{ github.sha }}
+        resources:
+          limits: 
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
