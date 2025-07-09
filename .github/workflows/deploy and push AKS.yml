@@ -30,7 +30,7 @@ jobs:
         pip install Flask-WTF pymongo gunicorn requests flask
 
     - name: docker-build
-      run: docker build -t github-aks:'{{ gihub.sha }}'
+      run: docker build . -t github-aks:'{{ gihub.sha }}'
 
     - name: docker-login
       run: docker login --username '${{ secrets.REGISTRY_USERNAME }}' --password '${{ secrets.REGISTRY_PASSWORD }}'
