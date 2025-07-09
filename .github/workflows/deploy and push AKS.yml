@@ -55,27 +55,21 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Install kubelogin (AAD support)
-        run: |
-          curl -sL https://github.com/Azure/kubelogin/releases/latest/download/kubelogin-linux-amd64.tar.gz \
-          | tar -xz -C /usr/local/bin
-
-      - name: Get AKS kubeconfig
-        run: |
-          export KUBECONFIG="${RUNNER_TEMP}/kubeconfig"
-          az aks get-credentials \
-            --resource-group "${{ env.RESOURCE_GROUP }}" \
-            --name "${{ env.CLUSTER_NAME }}" \
-            --file "$KUBECONFIG" \
-            --overwrite-existing
-          kubelogin convert-kubeconfig -l azurecli
-
-      - name: Set AKS context
-        uses: azure/k8s-set-context@v4
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+ 
+      - name: Install kubelogin
+        uses: azure/use-kubelogin@v1
         with:
-          method: kubeconfig
-          kubeconfig: ${{ env.KUBECONFIG }}
-          context: "$(kubectl config current-context)"
+          kubelogin-version: 'latest'
+  
+      - name: Set AKS context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ env.RESOURCE_GROUP }}
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          admin: 'false'
+          use-kubelogin: 'true'
     
       - name: Deploy to AKS using manifest(s)
         uses: azure/k8s-deploy@v4
