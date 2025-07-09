@@ -37,9 +37,6 @@ jobs:
     - name: docker-build
       run: docker build . -t myapp:${{ github.sha }}
 
-    - name: docker-login
-      run: docker login --username '${{ secrets.REGISTRY_USERNAME }}' --password '${{ secrets.REGISTRY_PASSWORD }}'
-
     - name: tag docker image
       run: docker tag github-aks:'{{ gihub.sha }}' amitd.azurecr.io/myapp:${{ github.sha }}
 
