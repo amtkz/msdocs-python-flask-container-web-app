@@ -38,7 +38,7 @@ jobs:
       run: docker build . -t myapp:${{ github.sha }}
 
     - name: tag docker image
-      run: docker tag myapp:${{ gihub.sha }} amitd.azurecr.io/myapp:${{ github.sha }}
+      run: docker tag myapp:${{ github.sha }} amitd.azurecr.io/myapp:${{ github.sha }}
 
     - name: push docker image
       run: docker push amitd.azurecr.io/myapp:${{ github.sha }}
