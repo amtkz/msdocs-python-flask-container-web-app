@@ -1,0 +1,42 @@
+name: AKS Deployment
+
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9]
+
+    steps:
+    - uses: actions/checkout@v4
+                
+    - name: Setup Python
+      uses: actions/setup-python@v5.6.0
+      with:
+        # Version range or exact version of Python or PyPy to use, using SemVer's version range syntax. Reads from .python-version if unset.
+        python-version: ${{ matrix.python-version }}
+        
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install Flask-WTF pymongo gunicorn requests flask
+
+    - name: docker-build
+      run: docker build -t github-aks:'{{ gihub.sha }}'
+
+    - name: docker-login
+      run: docker login --username '${{ secrets.REGISTRY_USERNAME }}' --password '${{ secrets.REGISTRY_PASSWORD }}'
+
+    - name: tag docker image
+      run: docker tag github-aks:'{{ gihub.sha }}' amitd.azurecr.io/myapp:${{ github.sha }}
+
+    - name: push docker image
+      run: docker push amitd.azurecr.io/myapp:${{ github.sha }}
