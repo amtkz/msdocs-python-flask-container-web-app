@@ -5,6 +5,7 @@ on:
   workflow_dispatch
 
 jobs:
+  name: Build and Push to ACR
   build:
     runs-on: ubuntu-latest
 
