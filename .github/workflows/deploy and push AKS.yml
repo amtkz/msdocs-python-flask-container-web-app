@@ -2,10 +2,7 @@ name: AKS Deployment
 
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch
 
 jobs:
   build:
@@ -42,3 +39,34 @@ jobs:
 
     - name: push docker image
       run: docker push amitd.azurecr.io/myapp:${{ github.sha }}
+
+  deploy:
+    name: 🧩 Deploy to AKS
+    needs: build
+    runs-on: ubuntu-latest
+  
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+  
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+  
+      - name: Set AKS context
+        uses: azure/k8s-set-context@v3
+        with:
+          method: azure-cli
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          resource-group: ${{ env.RESOURCE_GROUP }}
+  
+      - name: Deploy to AKS using manifest(s)
+        uses: azure/k8s-deploy@v4
+        with:
+          manifests: |
+            k8s/deployment.yaml
+            k8s/service.yaml
+          images: |
+            amitd.azurecr.io/myapp:${{ github.sha }}
+     
